@@ -1018,7 +1018,7 @@ namespace Wasmtime
             }
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return () =>
             {
@@ -1044,7 +1044,7 @@ namespace Wasmtime
             var ca = ValueBox.Converter<TA>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a) =>
             {
@@ -1076,7 +1076,7 @@ namespace Wasmtime
             var cb = ValueBox.Converter<TB>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b) =>
             {
@@ -1111,7 +1111,7 @@ namespace Wasmtime
             var cc = ValueBox.Converter<TC>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c) =>
             {
@@ -1149,7 +1149,7 @@ namespace Wasmtime
             var cd = ValueBox.Converter<TD>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d) =>
             {
@@ -1190,7 +1190,7 @@ namespace Wasmtime
             var ce = ValueBox.Converter<TE>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e) =>
             {
@@ -1234,7 +1234,7 @@ namespace Wasmtime
             var cf = ValueBox.Converter<TF>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f) =>
             {
@@ -1281,7 +1281,7 @@ namespace Wasmtime
             var cg = ValueBox.Converter<TG>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f, g) =>
             {
@@ -1331,7 +1331,7 @@ namespace Wasmtime
             var ch = ValueBox.Converter<TH>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f, g, h) =>
             {
@@ -1384,7 +1384,7 @@ namespace Wasmtime
             var ci = ValueBox.Converter<TI>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f, g, h, i) =>
             {
@@ -1442,7 +1442,7 @@ namespace Wasmtime
             var cj = ValueBox.Converter<TJ>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f, g, h, i, j) =>
             {
@@ -1503,7 +1503,7 @@ namespace Wasmtime
             var ck = ValueBox.Converter<TK>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f, g, h, i, j, k) =>
             {
@@ -1568,7 +1568,7 @@ namespace Wasmtime
             var cl = ValueBox.Converter<TL>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f, g, h, i, j, k, l) =>
             {
@@ -1636,7 +1636,7 @@ namespace Wasmtime
             var cm = ValueBox.Converter<TM>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f, g, h, i, j, k, l, m) =>
             {
@@ -1707,7 +1707,7 @@ namespace Wasmtime
             var cn = ValueBox.Converter<TN>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f, g, h, i, j, k, l, m, n) =>
             {
@@ -1781,7 +1781,7 @@ namespace Wasmtime
             var co = ValueBox.Converter<TO>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o) =>
             {
@@ -1858,7 +1858,7 @@ namespace Wasmtime
             var cp = ValueBox.Converter<TP>();
 
             // Create a factory for the return type
-            var factory = IReturnTypeFactory<TR>.Create();
+            var factory = IReturnTypeFactoryInitializer<TR>.Create();
 
             return (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p) =>
             {
@@ -2229,8 +2229,8 @@ namespace Wasmtime
 
             if (hasReturn)
             {
-                parameterTypes = type.GenericTypeArguments[0..^1];
-                returnType = type.GenericTypeArguments[^1];
+                parameterTypes = HelperFunctions.GetWithoutLast(type.GenericTypeArguments);
+                returnType = type.GenericTypeArguments[type.GenericTypeArguments.Length -1];
             }
             else
             {
@@ -2242,7 +2242,7 @@ namespace Wasmtime
 
             if (hasCaller)
             {
-                parameterTypes = parameterTypes[1..];
+                parameterTypes = HelperFunctions.GetWithoutFirst(parameterTypes.ToArray());
             }
 
             for (int i = 0; i < parameterTypes.Length; ++i)
@@ -2293,7 +2293,7 @@ namespace Wasmtime
 
                 // NOTE: reflection is extremely slow for invoking methods. in the future, perhaps this could be replaced with
                 // source generators, system.linq.expressions, or generate IL with DynamicMethods or something
-                var result = callback.Method.Invoke(callback.Target, BindingFlags.DoNotWrapExceptions, null, invokeArgs, null);
+                var result = callback.Method.Invoke(callback.Target, BindingFlags.Default/*DoNotWrapExceptions*/, null, invokeArgs, null);
 
                 if (resultKinds.Count > 0)
                 {
@@ -2314,6 +2314,9 @@ namespace Wasmtime
             }
             catch (Exception ex)
             {
+                if(ex.InnerException != null)
+                    ex = ex.InnerException;
+
                 var bytes = Encoding.UTF8.GetBytes(ex.Message);
 
                 fixed (byte* ptr = bytes)

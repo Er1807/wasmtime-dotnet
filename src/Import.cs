@@ -89,7 +89,7 @@ namespace Wasmtime
                 }
                 else
                 {
-                    ModuleName = Marshal.PtrToStringUTF8((IntPtr)moduleName->data, (int)moduleName->size);
+                    ModuleName = HelperFunctions.PtrToStringUTF8((IntPtr)moduleName->data, (int)moduleName->size);
                 }
 
                 var name = Native.wasm_importtype_name(importType);
@@ -99,7 +99,7 @@ namespace Wasmtime
                 }
                 else
                 {
-                    Name = Marshal.PtrToStringUTF8((IntPtr)name->data, (int)name->size);
+                    Name = HelperFunctions.PtrToStringUTF8((IntPtr)name->data, (int)name->size);
                 }
             }
         }

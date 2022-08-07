@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Nullable>enable</Nullable>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>9.0</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <AssemblyName>Wasmtime.Dotnet</AssemblyName>
+    <AssemblyName>Wasmtime.Framework</AssemblyName>
     <PackageId>Wasmtime</PackageId>
     <Version>$(WasmtimePackageVersion)</Version>
     <Authors>Peter Huene</Authors>
@@ -35,74 +35,15 @@ The .NET embedding of Wasmtime enables .NET code to instantiate WebAssembly modu
 	
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <None Update="wasmtime.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
-  <Target Name="DownloadWasmtime" BeforeTargets="BeforeBuild">
-    <PropertyGroup>
-      <WasmtimeArchitecture>x86_64</WasmtimeArchitecture>
-      <ReleaseURLBase Condition="'$(DevBuild)'=='true'">https://github.com/bytecodealliance/wasmtime/releases/download/dev/</ReleaseURLBase>
-      <ReleaseURLBase Condition="'$(ReleaseURLBase)'==''">https://github.com/bytecodealliance/wasmtime/releases/download/v$(WasmtimeVersion)/</ReleaseURLBase>
-      <ReleaseFileNameBase Condition="'$(DevBuild)'=='true'">wasmtime-dev-$(WasmtimeArchitecture)</ReleaseFileNameBase>
-      <ReleaseFileNameBase Condition="'$(ReleaseFileNameBase)'==''">wasmtime-v$(WasmtimeVersion)-$(WasmtimeArchitecture)</ReleaseFileNameBase>
-    </PropertyGroup>
-
-    <ItemGroup>
-      <WasmtimeDownload Include="Linux" Condition="'$(DevBuild)' != 'true' Or $([MSBuild]::IsOsPlatform('Linux'))">
-        <ReleaseFileExtension>.tar.xz</ReleaseFileExtension>
-        <ReleaseDirectory>$(ReleaseFileNameBase)-linux-c-api</ReleaseDirectory>
-        <ReleaseFileName>%(ReleaseDirectory)%(ReleaseFileExtension)</ReleaseFileName>
-        <URL>$(ReleaseURLBase)%(ReleaseFileName)</URL>
-        <WasmtimeLibraryFilename>libwasmtime.so</WasmtimeLibraryFilename>
-        <PackagePath>runtimes/linux-x64/native/lib/libwasmtime.so</PackagePath>
-      </WasmtimeDownload>
-      <WasmtimeDownload Include="macOS" Condition="'$(DevBuild)' != 'true' Or $([MSBuild]::IsOsPlatform('OSX'))">
-        <ReleaseFileExtension>.tar.xz</ReleaseFileExtension>
-        <ReleaseDirectory>$(ReleaseFileNameBase)-macos-c-api</ReleaseDirectory>
-        <ReleaseFileName>%(ReleaseDirectory)%(ReleaseFileExtension)</ReleaseFileName>
-        <URL>$(ReleaseURLBase)%(ReleaseFileName)</URL>
-        <WasmtimeLibraryFilename>libwasmtime.dylib</WasmtimeLibraryFilename>
-        <PackagePath>runtimes/osx-x64/native/lib/libwasmtime.dylib</PackagePath>
-      </WasmtimeDownload>
-      <WasmtimeDownload Include="Windows" Condition="'$(DevBuild)' != 'true' Or $([MSBuild]::IsOsPlatform('Windows'))">
-        <ReleaseFileExtension>.zip</ReleaseFileExtension>
-        <ReleaseDirectory>$(ReleaseFileNameBase)-windows-c-api</ReleaseDirectory>
-        <ReleaseFileName>%(ReleaseDirectory)%(ReleaseFileExtension)</ReleaseFileName>
-        <URL>$(ReleaseURLBase)%(ReleaseFileName)</URL>
-        <WasmtimeLibraryFilename>wasmtime.dll</WasmtimeLibraryFilename>
-        <PackagePath>runtimes/win-x64/native/lib/wasmtime.dll</PackagePath>
-      </WasmtimeDownload>
-    </ItemGroup>
-
-	  <DownloadFile
-      Condition="!Exists('$(IntermediateOutputPath)/%(WasmtimeDownload.ReleaseFileName)')"
-      SourceUrl="%(WasmtimeDownload.URL)"
-      DestinationFolder="$(IntermediateOutputPath)"
-      SkipUnchangedFiles="true"
-    />
-	  
-    <!-- Workaround for https://github.com/msys2/MSYS2-packages/issues/1548 -->
-    <Exec
-      Condition="%(WasmtimeDownload.ReleaseFileExtension) == '.tar.xz' And !Exists('$(IntermediateOutputPath)/%(WasmtimeDownload.ReleaseDirectory)')"
-      Command="xz --decompress --stdout %(WasmtimeDownload.ReleaseFileName) | tar xf -"
-      WorkingDirectory="$(IntermediateOutputPath)"
-      StandardOutputImportance="Low"
-      StandardErrorImportance="Low"
-    />
-    <Exec
-      Condition="%(WasmtimeDownload.ReleaseFileExtension) == '.zip' And !Exists('$(IntermediateOutputPath)/%(WasmtimeDownload.ReleaseDirectory)')"
-      Command="unzip %(WasmtimeDownload.ReleaseFileName)"
-      WorkingDirectory="$(IntermediateOutputPath)"
-      StandardOutputImportance="Low"
-      StandardErrorImportance="Low"
-    />
-    
-    <ItemGroup>
-      <Content Include="$(IntermediateOutputPath)/%(WasmtimeDownload.ReleaseDirectory)/lib/%(WasmtimeDownload.WasmtimeLibraryFilename)">
-        <PackagePath>%(WasmtimeDownload.PackagePath)</PackagePath>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <Link>%(WasmtimeDownload.WasmtimeLibraryFilename)</Link>
-      </Content>
-    </ItemGroup>
-  </Target>
+  
 
 </Project>
