@@ -31,8 +31,13 @@ namespace Wasmtime
             {
                 throw new ArgumentException("Must supply exactly 16 bytes to construct V128");
             }
-
-            bytes.CopyTo(AsSpan());
+            unsafe
+            {
+                for (int i = 0; i < 16; i++)
+                {
+                    this.bytes[i] = bytes[i];
+                }
+            }
         }
 
         /// <summary>
@@ -82,31 +87,15 @@ namespace Wasmtime
         {
         }
 
-        /// <summary>
-        /// Creates a new writeable span over the bytes of this V128
-        /// </summary>
-        /// <returns>The span representation of this V128.</returns>
-        public Span<byte> AsSpan()
+        internal unsafe void CopyTo(byte* v128)
         {
             unsafe
             {
-                return MemoryMarshal.CreateSpan(ref bytes[0], 16);
+                for (int i = 0; i < 16; i++)
+                {
+                    v128[i] = bytes[i];
+                }
             }
-        }
-
-        internal unsafe void CopyTo(byte* dest)
-        {
-            var dst = new Span<byte>(dest, 16);
-            CopyTo(dst);
-        }
-
-        /// <summary>
-        /// Copy bytes into a span
-        /// </summary>
-        /// <param name="dest">span to copy bytes into</param>
-        public void CopyTo(Span<byte> dest)
-        {
-            AsSpan().CopyTo(dest);
         }
     }
 }

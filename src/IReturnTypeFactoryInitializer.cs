@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace Wasmtime
 {
-    internal class Test<TReturn>
+    internal class IReturnTypeFactoryInitializer<TReturn>
     {
         public static IReturnTypeFactory<TReturn> Create()
         {

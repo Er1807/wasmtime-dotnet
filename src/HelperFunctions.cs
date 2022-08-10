@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Wasmtime
 {
-    public class Test2
+    public class HelperFunctions
     {
         public static Type[] GetWithoutLast(Type[] args)
         {
